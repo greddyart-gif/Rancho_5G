@@ -1661,7 +1661,10 @@
             document.getElementById('userRole').textContent = user.role === 'admin' ? '👑 Administrador' : '👨‍💼 Vendedor';
             
             initializeTabs();
-            updateDashboard();
+            // Esperar un momento antes de actualizar el dashboard para asegurar que todo esté cargado
+            setTimeout(() => {
+                updateDashboard();
+            }, 100);
         }
 
         // Logout
@@ -1800,7 +1803,10 @@
         // Actualizar gráficos
         function updateCharts() {
             const ctx1 = document.getElementById('trendsChart');
-            if (window.trendsChart) window.trendsChart.destroy();
+            if (!ctx1) return; // Salir si el elemento no existe
+            if (window.trendsChart && typeof window.trendsChart.destroy === 'function') {
+                window.trendsChart.destroy();
+            }
             
             const last7Days = [];
             const salesData = [];
@@ -1865,7 +1871,10 @@
             const sortedProducts = Object.entries(productSales).sort((a, b) => b[1] - a[1]).slice(0, 5);
             
             const ctx2 = document.getElementById('productsChart');
-            if (window.productsChart) window.productsChart.destroy();
+            if (!ctx2) return; // Salir si el elemento no existe
+            if (window.productsChart && typeof window.productsChart.destroy === 'function') {
+                window.productsChart.destroy();
+            }
             
             window.productsChart = new Chart(ctx2, {
                 type: 'bar',
@@ -3286,7 +3295,7 @@
 
         // Cerrar modales al hacer clic fuera
         window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
+            if (event && event.target && event.target.classList && event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         }
